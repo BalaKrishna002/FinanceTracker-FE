@@ -1,1 +1,22 @@
 FrontEnd for [Finance Tracker](https://github.com/BalaKrishna002/FinanceTracker)
+
+- User regsiters by providing the details
+  <img width="923" height="428" alt="rgister" src="https://github.com/user-attachments/assets/40d6f6df-0126-4508-8f3f-6de632e7f02b" />
+
+- Now User login with credentials (Email & Password)
+  <img width="756" height="341" alt="login" src="https://github.com/user-attachments/assets/d16b6184-23d6-4d11-b1da-8beb905c8cf2" />
+
+- After successful login, redirected to dashboard
+    1. where user can add new transactions by clicking + button
+    2. User can see all the transaction of the particular day(Edit/Delete) by selecting in date picker
+       <img width="909" height="317" alt="user_dashboard" src="https://github.com/user-attachments/assets/44b85946-da05-4c71-96aa-ea4edbed5fd7" />
+
+    4. User can see analtyics for the month mode and year
+       <img width="784" height="398" alt="user_analytics" src="https://github.com/user-attachments/assets/28cac872-8c3d-4e44-a097-a8e084ab34b4" />
+
+- User can go to user profile and can update the details and logout
+  <img width="791" height="419" alt="user_profile" src="https://github.com/user-attachments/assets/b86382dc-107b-492e-8bd3-f39fdd05d0ef" />
+
+
+
+
