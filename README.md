@@ -1,5 +1,10 @@
 FrontEnd for [Finance Tracker](https://github.com/BalaKrishna002/FinanceTracker)
 
+Setup:
+- clone the repo
+- Check the node.js and npm is installed in your laptop
+- after going to root of the project directory run command `npm install`
+
 - User regsiters by providing the details
   <img width="923" height="428" alt="rgister" src="https://github.com/user-attachments/assets/40d6f6df-0126-4508-8f3f-6de632e7f02b" />
 
@@ -13,6 +18,8 @@ FrontEnd for [Finance Tracker](https://github.com/BalaKrishna002/FinanceTracker)
 
     4. User can see analtyics for the month mode and year
        <img width="784" height="398" alt="user_analytics" src="https://github.com/user-attachments/assets/28cac872-8c3d-4e44-a097-a8e084ab34b4" />
+       <img width="784" height="407" alt="year_mode" src="https://github.com/user-attachments/assets/b8af1d77-3575-4c6c-80ae-e0395f4522b7" />
+
 
 - User can go to user profile and can update the details and logout
   <img width="791" height="419" alt="user_profile" src="https://github.com/user-attachments/assets/b86382dc-107b-492e-8bd3-f39fdd05d0ef" />
