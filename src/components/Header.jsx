@@ -5,7 +5,9 @@ const Header = () => {
     <Toolbar
       sx={{
         minHeight: 64,
-        px: 3,
+        px: 4, // horizontal padding to move away from the edge
+        display: "flex",
+        alignItems: "center",
       }}
     >
       {/* App Name */}
@@ -15,8 +17,9 @@ const Header = () => {
         sx={{
           fontWeight: "bold",
           color: "#000",
-          fontFamily: "'Roboto', 'Helvetica', 'Arial', sans-serif",
+          fontFamily: "'Inter', 'Roboto', 'Helvetica', 'Arial', sans-serif",
           letterSpacing: 1,
+          mt: 0.5, // slight top margin for vertical alignment
         }}
       >
         FTRACK

@@ -14,7 +14,19 @@ import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import api from "../api/axios";
 
-const emptyTxn = { amount: "", transactionType: "", description: "" };
+/**
+ * Helper: current local datetime for datetime-local input
+ * Format: yyyy-MM-ddTHH:mm
+ */
+const nowLocalDateTime = () =>
+  new Date().toISOString().slice(0, 16);
+
+const emptyTxn = {
+  amount: "",
+  transactionType: "",
+  description: "",
+  createdAt: nowLocalDateTime(), // NEW FIELD
+};
 
 const AddTransactionsModal = ({ open, handleClose, onSuccess }) => {
   const [transactions, setTransactions] = useState([{ ...emptyTxn }]);
@@ -26,20 +38,42 @@ const AddTransactionsModal = ({ open, handleClose, onSuccess }) => {
     setTransactions(copy);
   };
 
-  const addRow = () => setTransactions([...transactions, { ...emptyTxn }]);
+  const addRow = () =>
+    setTransactions([...transactions, { ...emptyTxn }]);
+
   const removeRow = (index) =>
     setTransactions(transactions.filter((_, i) => i !== index));
 
   const submit = async () => {
     setMessage({ type: "", text: "" });
+
     try {
-      await api.post("/transactions/bulk", transactions);
+      // Convert local datetime -> UTC ISO string
+      const payload = transactions.map((txn) => ({
+        amount: txn.amount,
+        transactionType: txn.transactionType,
+        description: txn.description,
+        createdAt: txn.createdAt
+          ? new Date(txn.createdAt).toISOString()
+          : null,
+      }));
+
+      await api.post("/transactions/bulk", payload);
+
       setTransactions([{ ...emptyTxn }]);
-      setMessage({ type: "success", text: "Transactions added successfully!" });
+      setMessage({
+        type: "success",
+        text: "Transactions added successfully!",
+      });
+
       if (onSuccess) onSuccess();
+
       setTimeout(() => setMessage({ type: "", text: "" }), 3000);
     } catch {
-      setMessage({ type: "error", text: "Failed to add transactions!" });
+      setMessage({
+        type: "error",
+        text: "Failed to add transactions!",
+      });
       setTimeout(() => setMessage({ type: "", text: "" }), 3000);
     }
   };
@@ -96,9 +130,12 @@ const AddTransactionsModal = ({ open, handleClose, onSuccess }) => {
                 label="Amount"
                 type="number"
                 value={txn.amount}
-                onChange={(e) => handleChange(index, "amount", e.target.value)}
+                onChange={(e) =>
+                  handleChange(index, "amount", e.target.value)
+                }
                 required
               />
+
               <TextField
                 fullWidth
                 select
@@ -118,8 +155,23 @@ const AddTransactionsModal = ({ open, handleClose, onSuccess }) => {
               fullWidth
               label="Description"
               value={txn.description}
-              onChange={(e) => handleChange(index, "description", e.target.value)}
+              onChange={(e) =>
+                handleChange(index, "description", e.target.value)
+              }
               required
+              sx={{ mb: 2 }}
+            />
+
+            {/* CREATED AT - USER TIMEZONE */}
+            <TextField
+              fullWidth
+              type="datetime-local"
+              label="Transaction Date & Time"
+              InputLabelProps={{ shrink: true }}
+              value={txn.createdAt}
+              onChange={(e) =>
+                handleChange(index, "createdAt", e.target.value)
+              }
             />
 
             <IconButton
@@ -144,10 +196,7 @@ const AddTransactionsModal = ({ open, handleClose, onSuccess }) => {
 
         {/* Message */}
         {message.text && (
-          <Alert
-            severity={message.type}
-            sx={{ mt: 2 }}
-          >
+          <Alert severity={message.type} sx={{ mt: 2 }}>
             {message.text}
           </Alert>
         )}
