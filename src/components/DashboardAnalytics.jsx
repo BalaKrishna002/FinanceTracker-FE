@@ -2,11 +2,11 @@ import { useEffect, useState } from "react";
 import {
   Box,
   Typography,
-  ToggleButton,
-  ToggleButtonGroup,
   Paper,
   MenuItem,
   Select,
+  ToggleButton,
+  ToggleButtonGroup,
 } from "@mui/material";
 import AnalyticsChart from "./AnalyticsChart";
 import api from "../api/axios";
@@ -23,64 +23,83 @@ const months = [
 ];
 
 const DashboardAnalytics = ({ timezone }) => {
-  const [mode, setMode] = useState("month");
+  const [mode, setMode] = useState("MONTH");
+  const [chartType, setChartType] = useState("line");
   const [year, setYear] = useState(new Date().getFullYear());
   const [month, setMonth] = useState(new Date().getMonth());
   const [chartData, setChartData] = useState([]);
   const [total, setTotal] = useState({ credit: 0, debit: 0 });
 
   const fetchAnalytics = async () => {
-    let range;
+    if (!timezone) return;
 
-    if (mode === "year") {
-      range = getEpochRangeForYear(timezone, year);
-    } else {
-      range = getEpochRangeForMonth(timezone, year, month);
-    }
+    const range =
+      mode === "YEAR"
+        ? getEpochRangeForYear(timezone, year)
+        : getEpochRangeForMonth(timezone, year, month);
 
     const res = await api.get(
-      `/transactions/aggregation?mode=${mode.toUpperCase()}&from=${range.from}&to=${range.to}`
+      `/transactions/aggregation?mode=${mode}&from=${range.from}&to=${range.to}`
     );
 
-    const mapped = mapAggregationData(res.data, mode, timezone);
+    const mapped = mapAggregationData(res.data, mode.toLowerCase(), timezone);
     setChartData(mapped.chartData);
     setTotal(mapped.total);
   };
 
   useEffect(() => {
     fetchAnalytics();
-  }, [mode, year, month]);
+  }, [mode, year, month, timezone]);
 
   return (
     <Paper
       elevation={0}
       sx={{
         p: 3,
+        mt: 4,
         borderRadius: 3,
         border: "1px solid #eee",
         background: "linear-gradient(180deg, #fafafa, #ffffff)",
       }}
     >
       {/* Header */}
-      <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
+      <Box
+        display="flex"
+        justifyContent="space-between"
+        alignItems="center"
+        mb={3}
+      >
         <Typography variant="h6" fontWeight={600}>
-          Analytics Overview
+          Analytics
         </Typography>
 
-        <ToggleButtonGroup
-          value={mode}
-          exclusive
-          onChange={(e, val) => val && setMode(val)}
-          size="small"
-        >
-          <ToggleButton value="month">Month</ToggleButton>
-          <ToggleButton value="year">Year</ToggleButton>
-        </ToggleButtonGroup>
+        <Box display="flex" gap={2}>
+          {/* Mode Dropdown */}
+          <Select
+            size="small"
+            value={mode}
+            onChange={(e) => setMode(e.target.value)}
+          >
+            <MenuItem value="MONTH">Month</MenuItem>
+            <MenuItem value="YEAR">Year</MenuItem>
+          </Select>
+
+          {/* Chart Toggle */}
+          <ToggleButtonGroup
+            value={chartType}
+            exclusive
+            size="small"
+            onChange={(e, val) => val && setChartType(val)}
+          >
+            <ToggleButton value="line">Line</ToggleButton>
+            <ToggleButton value="bar">Bar</ToggleButton>
+          </ToggleButtonGroup>
+        </Box>
       </Box>
 
       {/* Pickers */}
       <Box display="flex" gap={2} mb={3}>
-        {mode === "year" && (
+        {mode === "YEAR" && (
           <Select size="small" value={year} onChange={(e) => setYear(e.target.value)}>
             {years.map((y) => (
               <MenuItem key={y} value={y}>{y}</MenuItem>
@@ -88,23 +107,15 @@ const DashboardAnalytics = ({ timezone }) => {
           </Select>
         )}
 
-        {mode === "month" && (
+        {mode === "MONTH" && (
           <>
-            <Select
-              size="small"
-              value={month}
-              onChange={(e) => setMonth(e.target.value)}
-            >
+            <Select size="small" value={month} onChange={(e) => setMonth(e.target.value)}>
               {months.map((m, i) => (
                 <MenuItem key={m} value={i}>{m}</MenuItem>
               ))}
             </Select>
 
-            <Select
-              size="small"
-              value={year}
-              onChange={(e) => setYear(e.target.value)}
-            >
+            <Select size="small" value={year} onChange={(e) => setYear(e.target.value)}>
               {years.map((y) => (
                 <MenuItem key={y} value={y}>{y}</MenuItem>
               ))}
@@ -115,8 +126,13 @@ const DashboardAnalytics = ({ timezone }) => {
 
       {/* Chart */}
       <AnalyticsChart
-        title={mode === "year" ? "Yearly Credit vs Debit" : "Monthly Credit vs Debit"}
+        title={
+          mode === "YEAR"
+            ? "Yearly Credit vs Debit"
+            : "Monthly Credit vs Debit"
+        }
         data={chartData}
+        chartType={chartType}
       />
 
       {/* Totals */}

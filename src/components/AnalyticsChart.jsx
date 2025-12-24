@@ -3,6 +3,8 @@ import {
   ResponsiveContainer,
   LineChart,
   Line,
+  BarChart,
+  Bar,
   XAxis,
   YAxis,
   Tooltip,
@@ -11,11 +13,8 @@ import {
 } from "recharts";
 import { Box, Typography } from "@mui/material";
 
-// Props:
-// title: string
-// data: [{ label: string, credit: number, debit: number }]
-const AnalyticsChart = ({ title, data }) => {
-  if (!data || data.length === 0)
+const AnalyticsChart = ({ title, data, chartType }) => {
+  if (!data || data.length === 0) {
     return (
       <Typography
         variant="body2"
@@ -25,12 +24,18 @@ const AnalyticsChart = ({ title, data }) => {
         No data available
       </Typography>
     );
+  }
 
   const chartFont = {
     fontFamily: "Inter, Roboto, sans-serif",
     fontSize: 14,
     fill: "#333",
     fontWeight: 500,
+  };
+
+  const commonProps = {
+    data,
+    margin: { top: 10, right: 20, left: 0, bottom: 0 },
   };
 
   return (
@@ -45,60 +50,41 @@ const AnalyticsChart = ({ title, data }) => {
       </Typography>
 
       <ResponsiveContainer width="100%" height={320}>
-        <LineChart data={data} margin={{ top: 10, right: 20, left: 0, bottom: 0 }}>
-          <CartesianGrid stroke="#f0f0f0" strokeDasharray="3 3" />
-
-          <XAxis
-            dataKey="label"
-            tick={chartFont}
-            axisLine={{ stroke: "#ddd" }}
-            tickLine={false}
-          />
-          <YAxis tick={chartFont} axisLine={{ stroke: "#ddd" }} tickLine={false} />
-
-          <Tooltip
-            contentStyle={{
-              backgroundColor: "#fff",
-              borderRadius: "8px",
-              border: "1px solid #ddd",
-              boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
-              fontFamily: "Inter, Roboto, sans-serif",
-              fontSize: 14,
-            }}
-            itemStyle={{ color: "#333", fontWeight: 500 }}
-          />
-
-          <Legend
-            verticalAlign="bottom"
-            height={36}
-            iconType="circle"
-            wrapperStyle={{
-              fontFamily: "Inter, Roboto, sans-serif",
-              fontSize: 14,
-              color: "#555",
-              paddingTop: "10px",
-            }}
-          />
-
-          <Line
-            type="monotone"
-            dataKey="credit"
-            name="Credit"
-            stroke="#2e7d32"
-            strokeWidth={3}
-            dot={{ r: 4 }}
-            activeDot={{ r: 6 }}
-          />
-          <Line
-            type="monotone"
-            dataKey="debit"
-            name="Debit"
-            stroke="#d32f2f"
-            strokeWidth={3}
-            dot={{ r: 4 }}
-            activeDot={{ r: 6 }}
-          />
-        </LineChart>
+        {chartType === "bar" ? (
+          <BarChart {...commonProps}>
+            <CartesianGrid stroke="#f0f0f0" strokeDasharray="3 3" />
+            <XAxis dataKey="label" tick={chartFont} tickLine={false} />
+            <YAxis tick={chartFont} tickLine={false} />
+            <Tooltip />
+            <Legend />
+            <Bar dataKey="credit" name="Credit" fill="#2e7d32" radius={[6, 6, 0, 0]} />
+            <Bar dataKey="debit" name="Debit" fill="#d32f2f" radius={[6, 6, 0, 0]} />
+          </BarChart>
+        ) : (
+          <LineChart {...commonProps}>
+            <CartesianGrid stroke="#f0f0f0" strokeDasharray="3 3" />
+            <XAxis dataKey="label" tick={chartFont} tickLine={false} />
+            <YAxis tick={chartFont} tickLine={false} />
+            <Tooltip />
+            <Legend />
+            <Line
+              type="monotone"
+              dataKey="credit"
+              name="Credit"
+              stroke="#2e7d32"
+              strokeWidth={3}
+              dot={{ r: 4 }}
+            />
+            <Line
+              type="monotone"
+              dataKey="debit"
+              name="Debit"
+              stroke="#d32f2f"
+              strokeWidth={3}
+              dot={{ r: 4 }}
+            />
+          </LineChart>
+        )}
       </ResponsiveContainer>
     </Box>
   );

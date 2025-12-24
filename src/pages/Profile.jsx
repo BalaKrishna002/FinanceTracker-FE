@@ -8,7 +8,6 @@ import {
   MenuItem,
   TextField,
   Alert,
-  Divider,
   Paper,
   Tooltip,
 } from "@mui/material";
@@ -19,29 +18,26 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import api from "../api/axios";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
-
-const timezones = Intl.supportedValuesOf("timeZone");
-const currencies = ["USD", "EUR", "INR", "GBP", "JPY", "AUD", "CAD", "CNY"];
+import { getTimezones } from "../utils/timezones";
+import { currencies } from "../utils/currencies";
 
 const Profile = () => {
   const { userId, logout } = useAuth();
   const navigate = useNavigate();
+
   const [user, setUser] = useState(null);
   const [editField, setEditField] = useState("");
   const [fieldValue, setFieldValue] = useState("");
   const [message, setMessage] = useState({ type: "", text: "" });
 
-  const fetchUser = async () => {
-    const res = await api.get(`/user/${userId}`);
-    setUser(res.data);
-  };
+  const timezones = getTimezones();
 
   useEffect(() => {
-    fetchUser();
-  }, []);
+    api.get(`/user/${userId}`).then((res) => setUser(res.data));
+  }, [userId]);
 
   const handleLogout = () => {
-    logout(); // clear token & auth context
+    logout();
     navigate("/login");
   };
 
@@ -58,36 +54,43 @@ const Profile = () => {
   const saveField = async (field) => {
     try {
       await api.put(`/user/${userId}`, { [field]: fieldValue });
-      setMessage({ type: "success", text: `${field} updated successfully!` });
       setEditField("");
-      fetchUser();
+      const res = await api.get(`/user/${userId}`);
+      setUser(res.data);
+      setMessage({ type: "success", text: "Updated successfully" });
       setTimeout(() => setMessage({ type: "", text: "" }), 3000);
     } catch {
-      setMessage({ type: "error", text: `Failed to update ${field}` });
-      setTimeout(() => setMessage({ type: "", text: "" }), 3000);
+      setMessage({ type: "error", text: "Update failed" });
     }
   };
 
-  if (!user) return <Typography>Loading...</Typography>;
+  if (!user) return null;
 
-  const renderField = (label, field, options) => (
-    <Box
-      display="flex"
-      alignItems="center"
-      justifyContent="space-between"
-      mb={2}
-      p={2}
+  const Field = ({ label, field, options }) => (
+    <Paper
+      elevation={0}
       sx={{
-        backgroundColor: "#f9f9f9",
+        p: 2,
+        border: "1px solid #eee",
         borderRadius: 2,
-        boxShadow: "0px 1px 5px rgba(0,0,0,0.05)",
+        width: "100%",
+        boxSizing: "border-box",
       }}
     >
-      <Typography variant="subtitle1" sx={{ fontWeight: 500 }}>
+      <Typography
+        variant="caption"
+        sx={{ color: "text.secondary", fontWeight: 600 }}
+      >
         {label}
       </Typography>
 
-      <Box display="flex" alignItems="center" gap={1}>
+      <Box
+        mt={0.5}
+        display="flex"
+        alignItems="center"
+        gap={1}
+        sx={{ maxWidth: "100%" }}
+      >
         {editField === field ? (
           <>
             {options ? (
@@ -96,6 +99,7 @@ const Profile = () => {
                 size="small"
                 value={fieldValue}
                 onChange={(e) => setFieldValue(e.target.value)}
+                fullWidth
               >
                 {options.map((opt) => (
                   <MenuItem key={opt} value={opt}>
@@ -108,39 +112,43 @@ const Profile = () => {
                 size="small"
                 value={fieldValue}
                 onChange={(e) => setFieldValue(e.target.value)}
+                fullWidth
               />
             )}
-            <IconButton onClick={() => saveField(field)} color="success">
-              <CheckIcon />
+
+            <IconButton size="small" color="success" onClick={() => saveField(field)}>
+              <CheckIcon fontSize="small" />
             </IconButton>
-            <IconButton onClick={cancelEdit} color="error">
-              <CloseIcon />
+            <IconButton size="small" color="error" onClick={cancelEdit}>
+              <CloseIcon fontSize="small" />
             </IconButton>
           </>
         ) : (
           <>
-            <Typography variant="body1">{user[field]}</Typography>
-            <IconButton onClick={() => startEdit(field)}>
+            <Typography
+              fontWeight={500}
+              sx={{
+                flex: 1,
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap",
+              }}
+            >
+              {user[field]}
+            </Typography>
+            <IconButton size="small" onClick={() => startEdit(field)}>
               <EditIcon fontSize="small" />
             </IconButton>
           </>
         )}
       </Box>
-    </Box>
+    </Paper>
   );
 
   return (
-    <Container maxWidth="sm" sx={{ mt: 4 }}>
-      <Paper
-        sx={{
-          p: 4,
-          borderRadius: 3,
-          boxShadow: "0px 4px 12px rgba(0,0,0,0.05)",
-          backgroundColor: "#fff",
-          position: "relative",
-        }}
-      >
-        {/* Logout Button */}
+    <Container maxWidth="md" sx={{ mt: 5 }}>
+      <Paper sx={{ p: 4, borderRadius: 3, border: "1px solid #eee", position: "relative" }}>
+        {/* Logout */}
         <Tooltip title="Logout">
           <IconButton
             sx={{ position: "absolute", top: 16, right: 16 }}
@@ -152,20 +160,40 @@ const Profile = () => {
 
         {/* Avatar */}
         <Box display="flex" justifyContent="center" mb={3}>
-          <Avatar sx={{ width: 80, height: 80, bgcolor: "#1976d2" }}>
-            {user.fullName?.charAt(0).toUpperCase()}
+          <Avatar
+            sx={{
+              width: 96,
+              height: 96,
+              bgcolor: "#111",
+              fontSize: 36,
+              fontWeight: 600,
+            }}
+          >
+            {user.fullName?.charAt(0)}
           </Avatar>
         </Box>
 
-        <Typography variant="h5" textAlign="center" mb={3}>
-          User Profile
+        <Typography textAlign="center" variant="h5" fontWeight={600} mb={4}>
+          Profile
         </Typography>
 
-        {/* Fields */}
-        {renderField("Full Name", "fullName")}
-        {renderField("Email", "email")}
-        {renderField("Timezone", "timezone", timezones)}
-        {renderField("Currency", "currency", currencies)}
+        {/* 2x2 GRID */}
+        <Box
+          sx={{
+            display: "grid",
+            gridTemplateColumns: { xs: "1fr", md: "1fr 1fr" },
+            gap: 2,
+          }}
+        >
+          <Field label="Full Name" field="fullName" />
+          <Field label="Email" field="email" />
+          <Field label="Timezone" field="timezone" options={timezones} />
+          <Field
+            label="Currency"
+            field="currency"
+            options={currencies.map((c) => c.code)}
+          />
+        </Box>
 
         {message.text && (
           <Alert severity={message.type} sx={{ mt: 3 }}>
