@@ -33,7 +33,7 @@ const AddTransactionsModal = ({ open, handleClose, onSuccess }) => {
   const submit = async () => {
     setMessage({ type: "", text: "" });
     try {
-      await api.post("/api/transactions/bulk", transactions);
+      await api.post("/transactions/bulk", transactions);
       setTransactions([{ ...emptyTxn }]);
       setMessage({ type: "success", text: "Transactions added successfully!" });
       if (onSuccess) onSuccess();
@@ -97,6 +97,7 @@ const AddTransactionsModal = ({ open, handleClose, onSuccess }) => {
                 type="number"
                 value={txn.amount}
                 onChange={(e) => handleChange(index, "amount", e.target.value)}
+                required
               />
               <TextField
                 fullWidth
@@ -106,6 +107,7 @@ const AddTransactionsModal = ({ open, handleClose, onSuccess }) => {
                 onChange={(e) =>
                   handleChange(index, "transactionType", e.target.value)
                 }
+                required
               >
                 <MenuItem value="DEBIT">DEBIT</MenuItem>
                 <MenuItem value="CREDIT">CREDIT</MenuItem>
@@ -117,6 +119,7 @@ const AddTransactionsModal = ({ open, handleClose, onSuccess }) => {
               label="Description"
               value={txn.description}
               onChange={(e) => handleChange(index, "description", e.target.value)}
+              required
             />
 
             <IconButton

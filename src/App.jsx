@@ -5,11 +5,13 @@ import Dashboard from "./pages/Dashboard";
 import Profile from "./pages/Profile"
 import PrivateRoute from "./routes/PrivateRoute";
 import { AuthProvider } from "./context/AuthContext";
+import Header from "./components/Header";
 
 export default function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
+      <Header /> {/* Show on every page */}
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />

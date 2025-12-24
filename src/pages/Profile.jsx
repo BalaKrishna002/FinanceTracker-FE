@@ -10,20 +10,24 @@ import {
   Alert,
   Divider,
   Paper,
+  Tooltip,
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import CheckIcon from "@mui/icons-material/Check";
 import CloseIcon from "@mui/icons-material/Close";
+import LogoutIcon from "@mui/icons-material/Logout";
 import api from "../api/axios";
 import { useAuth } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const timezones = Intl.supportedValuesOf("timeZone");
 const currencies = ["USD", "EUR", "INR", "GBP", "JPY", "AUD", "CAD", "CNY"];
 
 const Profile = () => {
-  const { userId } = useAuth();
+  const { userId, logout } = useAuth();
+  const navigate = useNavigate();
   const [user, setUser] = useState(null);
-  const [editField, setEditField] = useState(""); // which field is being edited
+  const [editField, setEditField] = useState("");
   const [fieldValue, setFieldValue] = useState("");
   const [message, setMessage] = useState({ type: "", text: "" });
 
@@ -35,6 +39,11 @@ const Profile = () => {
   useEffect(() => {
     fetchUser();
   }, []);
+
+  const handleLogout = () => {
+    logout(); // clear token & auth context
+    navigate("/login");
+  };
 
   const startEdit = (field) => {
     setEditField(field);
@@ -128,8 +137,19 @@ const Profile = () => {
           borderRadius: 3,
           boxShadow: "0px 4px 12px rgba(0,0,0,0.05)",
           backgroundColor: "#fff",
+          position: "relative",
         }}
       >
+        {/* Logout Button */}
+        <Tooltip title="Logout">
+          <IconButton
+            sx={{ position: "absolute", top: 16, right: 16 }}
+            onClick={handleLogout}
+          >
+            <LogoutIcon />
+          </IconButton>
+        </Tooltip>
+
         {/* Avatar */}
         <Box display="flex" justifyContent="center" mb={3}>
           <Avatar sx={{ width: 80, height: 80, bgcolor: "#1976d2" }}>
