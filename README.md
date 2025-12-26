@@ -23,11 +23,14 @@ About the dashboard as per User perspective:
        
        <img width="620" height="381" alt="Add_transactions" src="https://github.com/user-attachments/assets/4c8187f9-51ea-46bd-8aa8-fdb5cd6cf850" />
 
-    3. User can see analtyics for the month mode and year
-       
-       <img width="784" height="398" alt="user_analytics" src="https://github.com/user-attachments/assets/28cac872-8c3d-4e44-a097-a8e084ab34b4" />
-       <img width="784" height="407" alt="year_mode" src="https://github.com/user-attachments/assets/b8af1d77-3575-4c6c-80ae-e0395f4522b7" />
+    3. User can see analtyics for the month mode and year with Line & Bar chart visualisation
+         <u>Year Mode:</u>
+        <img width="815" height="428" alt="finance-tracker" src="https://github.com/user-attachments/assets/365240da-8b4b-44e3-b9cd-9173d8910195" />
+        <img width="815" height="435" alt="Year_Bar" src="https://github.com/user-attachments/assets/a01d92c0-2aac-4609-8324-bf50ec9b7648" />
 
+        <u>Month Mode:</u>
+        <img width="800" height="430" alt="Month_line" src="https://github.com/user-attachments/assets/1b64bf9e-aad5-4bd6-ba17-d3e0f51256da" />
+        <img width="806" height="428" alt="Month_Bar" src="https://github.com/user-attachments/assets/ee0a2fe3-f94b-4424-8636-ba823587e1f2" />
 
 - User can go to user profile and can update the details and logout
   
