@@ -23,13 +23,13 @@ About the dashboard as per User perspective:
        
        <img width="620" height="381" alt="Add_transactions" src="https://github.com/user-attachments/assets/4c8187f9-51ea-46bd-8aa8-fdb5cd6cf850" />
 
-    3. User can see analtyics for the month mode and year with Line & Bar chart visualisation \
+    3. User can see analtyics for the month mode and year with Line & Bar chart visualisation
        
-         ***Year Mode:***
+         ***Year Mode:*** \
         <img width="815" height="428" alt="finance-tracker" src="https://github.com/user-attachments/assets/365240da-8b4b-44e3-b9cd-9173d8910195" />
         <img width="815" height="435" alt="Year_Bar" src="https://github.com/user-attachments/assets/a01d92c0-2aac-4609-8324-bf50ec9b7648" />
 
-        ***Month Mode:***
+        ***Month Mode:*** \
         <img width="800" height="430" alt="Month_line" src="https://github.com/user-attachments/assets/1b64bf9e-aad5-4bd6-ba17-d3e0f51256da" />
         <img width="806" height="428" alt="Month_Bar" src="https://github.com/user-attachments/assets/ee0a2fe3-f94b-4424-8636-ba823587e1f2" />
 
